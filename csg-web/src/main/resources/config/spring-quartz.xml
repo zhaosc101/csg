@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	default-autowire="byName">
+
+	<!-- 定时结果查询 -->
+	<bean id="csgTestBean" class="com.zsc.csg.web.quartz.JobDetailFactoryBean">
+		<!-- 数据源 -->
+		<property name="jobQuartzDataSource">
+         	<ref bean="writeDataSource" />
+		</property>
+		<!-- sql -->
+		<property name="quartzSQL" value="#{quartzProps['ds.csg.quartzSQL.quartzTest']}" />
+		<!-- 调用的类 -->
+		<property name="targetObject">
+			<ref bean="quartzTestJob" />
+		</property>
+		<!-- 调用类中的方法 -->
+		<property name="targetMethod">
+			<value>execute</value>
+		</property>
+		<!-- 同一个 定时任务顺序进行 -->
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	<!-- 定义触发时间 -->
+	<bean id="csgTestTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"
+		scope="prototype">
+		<property name="jobDetail">
+			<ref bean="csgTestBean" />
+		</property>
+		<property name="cronExpression">
+			<value>#{quartzProps['quartz.csgTestTrigger.cronExpression']}</value>
+		</property>
+	</bean>
+	 <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序  -->
+    <bean autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref local="csgTestTrigger"/>
+			</list>
+		</property>
+	</bean>
+</beans>

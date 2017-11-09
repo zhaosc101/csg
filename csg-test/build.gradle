@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+
+ext {
+  springBootVersion = "1.2.2.RELEASE"
+   
+}
+dependencies {
+	compile project(":csg-core")
+	compile('com.suixingpay.common:common-systemLog:1.1-SNAPSHOT')
+    testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+	
+}
+jar {
+	description = 'csg-test'
+	version =  '1.0'
+}

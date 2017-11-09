@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.zsc.csg.core.orm.usr.mapper.UsrInfoMapper">
+
+	<resultMap id="Result" type="com.zsc.csg.core.orm.usr.domain.UsrInfo">
+				<id property="uuid" column="UUID" />
+				<result property="usrId" column="USR_ID" />
+				<result property="usrNm" column="USR_NM" />
+				<result property="creTyp" column="CRE_TYP" />
+				<result property="creNo" column="CRE_NO" />
+				<result property="gender" column="GENDER" />
+				<result property="phoneNo" column="PHONE_NO" />
+				<result property="usrSts" column="USR_STS" />
+				<result property="rmk" column="RMK" />
+				<result property="tranDt" column="TRAN_DT" />
+				<result property="cteDt" column="CTE_DT" />
+				<result property="cteOp" column="CTE_OP" />
+				<result property="uptDt" column="UPT_DT" />
+				<result property="uptOp" column="UPT_OP" />
+	</resultMap>
+	
+	<sql id="columns">
+		UUID,USR_ID,USR_NM,CRE_TYP,CRE_NO,GENDER,PHONE_NO,USR_STS,RMK,TRAN_DT,CTE_DT,CTE_OP,UPT_DT,UPT_OP
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+					<if test="@Ognl@isNotEmpty(uuid)"> AND UUID  =#{uuid}  </if>
+					<if test="@Ognl@isNotEmpty(usrId)"> AND USR_ID  =#{usrId}  </if>
+					<if test="@Ognl@isNotEmpty(usrNm)"> AND USR_NM  =#{usrNm}  </if>
+					<if test="@Ognl@isNotEmpty(creTyp)"> AND CRE_TYP  =#{creTyp}  </if>
+					<if test="@Ognl@isNotEmpty(creNo)"> AND CRE_NO  =#{creNo}  </if>
+					<if test="@Ognl@isNotEmpty(gender)"> AND GENDER  =#{gender}  </if>
+					<if test="@Ognl@isNotEmpty(phoneNo)"> AND PHONE_NO  =#{phoneNo}  </if>
+					<if test="@Ognl@isNotEmpty(usrSts)"> AND USR_STS  =#{usrSts}  </if>
+					<if test="@Ognl@isNotEmpty(rmk)"> AND RMK  =#{rmk}  </if>
+					<if test="@Ognl@isNotEmpty(tranDt)"> AND TRAN_DT  =#{tranDt}  </if>
+					<if test="@Ognl@isNotEmpty(cteDt)"> AND CTE_DT  =#{cteDt} </if>
+					<if test="@Ognl@isNotEmpty(cteOp)"> AND CTE_OP  =#{cteOp}  </if>
+					<if test="@Ognl@isNotEmpty(uptDt)"> AND UPT_DT  =#{uptDt} </if>
+					<if test="@Ognl@isNotEmpty(uptOp)"> AND UPT_OP  =#{uptOp}  </if>
+		</where>
+	</sql>
+
+	<insert id="save" parameterType="com.zsc.csg.core.orm.usr.domain.UsrInfo">
+		INSERT INTO T_CSG_USR_INF
+		(<include refid="columns"/>)
+		VALUES
+		(#{uuid}, #{usrId}, #{usrNm}, #{creTyp}, #{creNo}, #{gender}, #{phoneNo}, #{usrSts}, #{rmk}, #{tranDt}, #{cteDt}, #{cteOp}, #{uptDt}, #{uptOp})
+	</insert>
+	
+	<delete id="delete" parameterType="String">
+		DELETE FROM T_CSG_USR_INF 
+		WHERE 			UUID
+		=#{			UUID
+		}
+	</delete>
+	
+	<update id="update" parameterType="com.zsc.csg.core.orm.usr.domain.UsrInfo">
+		UPDATE T_CSG_USR_INF SET
+			USR_ID=#{usrId}, 
+			USR_NM=#{usrNm}, 
+			CRE_TYP=#{creTyp}, 
+			CRE_NO=#{creNo}, 
+			GENDER=#{gender}, 
+			PHONE_NO=#{phoneNo}, 
+			USR_STS=#{usrSts}, 
+			RMK=#{rmk}, 
+			TRAN_DT=#{tranDt}, 
+			CTE_DT=#{cteDt}, 
+			CTE_OP=#{cteOp}, 
+			UPT_DT=#{uptDt}, 
+			UPT_OP=#{uptOp}
+		WHERE 			UUID
+		=#{			UUID
+		}
+	</update>
+	
+	<select id="findOne" parameterType="String" resultMap="Result">
+		SELECT <include refid="columns"/>
+		FROM T_CSG_USR_INF
+		WHERE 			UUID
+		=#{			UUID
+		}
+	</select>
+	
+	<select id="findAll" parameterType="String" resultMap="Result">
+		SELECT <include refid="columns"/>
+		FROM T_CSG_USR_INF
+		<if test="@Ognl@isNotEmpty(list)">
+		WHERE 			UUID
+		 IN
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+				#{item}
+		</foreach>
+		</if>
+	</select>
+	
+	<select id="find" parameterType="com.zsc.csg.core.orm.usr.domain.UsrInfo" resultMap="Result">
+		SELECT <include refid="columns"/>
+		FROM T_CSG_USR_INF
+		<include refid="dynamicWhere"/>
+	</select>
+	
+		
+	<insert id="insertSelective" parameterType="com.zsc.csg.core.orm.usr.domain.UsrInfo" >
+    insert into T_CSG_USR_INF
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+		    	<if test="@Ognl@isNotEmpty(uuid)">
+		    	UUID,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(usrId)">
+		    	USR_ID,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(usrNm)">
+		    	USR_NM,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(creTyp)">
+		    	CRE_TYP,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(creNo)">
+		    	CRE_NO,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(gender)">
+		    	GENDER,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(phoneNo)">
+		    	PHONE_NO,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(usrSts)">
+		    	USR_STS,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(rmk)">
+		    	RMK,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(tranDt)">
+		    	TRAN_DT,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(cteDt)">
+		    	CTE_DT,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(cteOp)">
+		    	CTE_OP,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(uptDt)">
+		    	UPT_DT,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(uptOp)">
+		    	UPT_OP,
+		    	</if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+		    	<if test="@Ognl@isNotEmpty(uuid)">
+		    	#{uuid},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(usrId)">
+		    	#{usrId},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(usrNm)">
+		    	#{usrNm},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(creTyp)">
+		    	#{creTyp},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(creNo)">
+		    	#{creNo},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(gender)">
+		    	#{gender},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(phoneNo)">
+		    	#{phoneNo},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(usrSts)">
+		    	#{usrSts},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(rmk)">
+		    	#{rmk},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(tranDt)">
+		    	#{tranDt},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(cteDt)">
+		    	#{cteDt},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(cteOp)">
+		    	#{cteOp},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(uptDt)">
+		    	#{uptDt},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(uptOp)">
+		    	#{uptOp},
+		    	</if>
+    	</trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.zsc.csg.core.orm.usr.domain.UsrInfo" >
+    update T_CSG_USR_INF
+    <set >
+    		<if test="@Ognl@isNotEmpty(usrId)">
+			USR_ID=#{usrId},
+			</if>
+    		<if test="@Ognl@isNotEmpty(usrNm)">
+			USR_NM=#{usrNm},
+			</if>
+    		<if test="@Ognl@isNotEmpty(creTyp)">
+			CRE_TYP=#{creTyp},
+			</if>
+    		<if test="@Ognl@isNotEmpty(creNo)">
+			CRE_NO=#{creNo},
+			</if>
+    		<if test="@Ognl@isNotEmpty(gender)">
+			GENDER=#{gender},
+			</if>
+    		<if test="@Ognl@isNotEmpty(phoneNo)">
+			PHONE_NO=#{phoneNo},
+			</if>
+    		<if test="@Ognl@isNotEmpty(usrSts)">
+			USR_STS=#{usrSts},
+			</if>
+    		<if test="@Ognl@isNotEmpty(rmk)">
+			RMK=#{rmk},
+			</if>
+    		<if test="@Ognl@isNotEmpty(tranDt)">
+			TRAN_DT=#{tranDt},
+			</if>
+    		<if test="@Ognl@isNotEmpty(cteDt)">
+			CTE_DT=#{cteDt},
+			</if>
+    		<if test="@Ognl@isNotEmpty(cteOp)">
+			CTE_OP=#{cteOp},
+			</if>
+    		<if test="@Ognl@isNotEmpty(uptDt)">
+			UPT_DT=#{uptDt},
+			</if>
+    		<if test="@Ognl@isNotEmpty(uptOp)">
+			UPT_OP=#{uptOp},
+			</if>
+    </set>
+		 WHERE 			UUID
+		=#{uuid}
+  </update>
+</mapper>

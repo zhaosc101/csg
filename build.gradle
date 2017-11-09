@@ -1,0 +1,34 @@
+//所有项目通用设置
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'maven'
+	
+	group = 'com.suixingpay'
+	version = "1.0-SNAPSHOT"
+	//JVM版本要求
+	//sourceCompatibility = 1.8
+    //targetCompatibility = 1.8  
+	sourceCompatibility = JavaVersion.VERSION_1_8 
+	
+	//设置编码
+	tasks.withType(JavaCompile) {
+	    options.encoding = "UTF-8"
+	}	
+	 
+    
+    repositories {
+        maven{
+    		url "http://172.16.60.188:8081/nexus/content/groups/public"
+	    }
+    }
+	
+}
+ 
+
+
+dependencies {    
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    testCompile 'junit:junit:4.12'
+}
+

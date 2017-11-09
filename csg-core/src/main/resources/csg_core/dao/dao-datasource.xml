@@ -1,0 +1,49 @@
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	
+	
+	<bean id="abstractDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close" abstract="true">
+		<!-- 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时 -->
+		<property name="initialSize" value="#{coreDao['spring.datasource.initialSize']}" />
+		<!-- 最大连接池数量 -->
+		<property name="maxActive" value="#{coreDao['spring.datasource.maxActive']}" />
+		<!-- 最小连接池数量 -->
+		<property name="minIdle" value="#{coreDao['spring.datasource.minIdle']}" />
+		<property name="removeAbandoned" value="#{coreDao['spring.datasource.removeAbandoned']}" />
+		<property name="removeAbandonedTimeout" value="#{coreDao['spring.datasource.removeAbandonedTimeout']}" />
+		<property name="timeBetweenEvictionRunsMillis" value="#{coreDao['spring.datasource.timeBetweenEvictionRunsMillis']}" />
+		<property name="minEvictableIdleTimeMillis" value="#{coreDao['spring.datasource.minEvictableIdleTimeMillis']}" />
+		<!-- 用来检测连接是否有效的sql，要求是一个查询语句。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会其作用。 -->
+		<property name="validationQuery" value="#{coreDao['spring.datasource.validationQuery']}" />
+		<!-- 	建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效 -->
+		<property name="testWhileIdle" value="#{coreDao['spring.datasource.testWhileIdle']}" />
+		<property name="testOnBorrow" value="#{coreDao['spring.datasource.testOnBorrow']}" />
+		<property name="testOnReturn" value="#{coreDao['spring.datasource.testOnReturn']}" />
+		<property name="maxOpenPreparedStatements" value="#{coreDao['spring.datasource.maxOpenPreparedStatements']}" />
+		<property name="filters" value="#{coreDao['spring.datasource.filters']}" />
+		<property name="logAbandoned" value="#{coreDao['spring.datasource.logAbandoned']}" />
+	</bean>
+	<!-- 多数据源配置 -->
+	<bean id="writeDataSource" parent="abstractDataSource">
+		<property name="driverClassName" value="#{coreDao['spring.datasource.driverClassName']}" />
+		<property name="url" value="#{coreDao['spring.datasource.url']}" />
+		<property name="username" value="#{coreDao['spring.datasource.username']}" />
+		<property name="password" value="#{coreDao['spring.datasource.password']}" />
+	</bean>
+	<!-- 动态配置数据源 -->  
+   <bean id ="dataSource" class= "com.zsc.csg.core.util.DynamicDataSource">
+          <property name ="targetDataSources">  
+                <map key-type ="java.lang.String">  
+                      <entry value-ref ="writeDataSource" key= "writeDataSource"></entry >  
+                      <!-- <entry value-ref ="ds_mop" key="ds_mop"></entry> -->  
+                </map >  
+          </property >  
+          <property name ="defaultTargetDataSource" ref= "writeDataSource"></property > <!-- 默认使用ds1的数据源 -->  
+   </bean >
+</beans>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.zsc.csg.core.orm.sys.mapper.SysUsrMapper">
+
+	<resultMap id="Result" type="com.zsc.csg.core.orm.sys.domain.SysUsr">
+				<id property="uuid" column="UUID" />
+				<result property="name" column="NAME" />
+				<result property="loginName" column="LOGIN_NAME" />
+				<result property="loginPwd" column="LOGIN_PWD" />
+				<result property="createtime" column="CREATETIME" />
+				<result property="state" column="STATE" />
+				<result property="createUser" column="CREATE_USER" />
+				<result property="updateUser" column="UPDATE_USER" />
+				<result property="updatetime" column="UPDATETIME" />
+	</resultMap>
+	
+	<sql id="columns">
+		UUID,NAME,LOGIN_NAME,LOGIN_PWD,CREATETIME,STATE,CREATE_USER,UPDATE_USER,UPDATETIME
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+					<if test="@Ognl@isNotEmpty(uuid)"> AND UUID  =#{uuid}  </if>
+					<if test="@Ognl@isNotEmpty(name)"> AND NAME  =#{name}  </if>
+					<if test="@Ognl@isNotEmpty(loginName)"> AND LOGIN_NAME  =#{loginName}  </if>
+					<if test="@Ognl@isNotEmpty(loginPwd)"> AND LOGIN_PWD  =#{loginPwd}  </if>
+					<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+					<if test="@Ognl@isNotEmpty(state)"> AND STATE  =#{state} </if>
+					<if test="@Ognl@isNotEmpty(createUser)"> AND CREATE_USER  =#{createUser}  </if>
+					<if test="@Ognl@isNotEmpty(updateUser)"> AND UPDATE_USER  =#{updateUser}  </if>
+					<if test="@Ognl@isNotEmpty(updatetime)"> AND UPDATETIME  =#{updatetime} </if>
+		</where>
+	</sql>
+
+	<insert id="save" parameterType="com.zsc.csg.core.orm.sys.domain.SysUsr">
+		INSERT INTO T_CSG_SYS_USER
+		(<include refid="columns"/>)
+		VALUES
+		(#{uuid}, #{name}, #{loginName}, #{loginPwd}, #{createtime}, #{state}, #{createUser}, #{updateUser}, #{updatetime})
+	</insert>
+	
+	<delete id="delete" parameterType="String">
+		DELETE FROM T_CSG_SYS_USER 
+		WHERE 			UUID
+		=#{			UUID
+		}
+	</delete>
+	
+	<update id="update" parameterType="com.zsc.csg.core.orm.sys.domain.SysUsr">
+		UPDATE T_CSG_SYS_USER SET
+			NAME=#{name}, 
+			LOGIN_NAME=#{loginName}, 
+			LOGIN_PWD=#{loginPwd}, 
+			CREATETIME=#{createtime}, 
+			STATE=#{state}, 
+			CREATE_USER=#{createUser}, 
+			UPDATE_USER=#{updateUser}, 
+			UPDATETIME=#{updatetime}
+		WHERE 			UUID
+		=#{			UUID
+		}
+	</update>
+	
+	<select id="findOne" parameterType="String" resultMap="Result">
+		SELECT <include refid="columns"/>
+		FROM T_CSG_SYS_USER
+		WHERE 			UUID
+		=#{			UUID
+		}
+	</select>
+	
+	<select id="findAll" parameterType="String" resultMap="Result">
+		SELECT <include refid="columns"/>
+		FROM T_CSG_SYS_USER
+		<if test="@Ognl@isNotEmpty(list)">
+		WHERE 			UUID
+		 IN
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+				#{item}
+		</foreach>
+		</if>
+	</select>
+	
+	<select id="find" parameterType="com.zsc.csg.core.orm.sys.domain.SysUsr" resultMap="Result">
+		SELECT <include refid="columns"/>
+		FROM T_CSG_SYS_USER
+		<include refid="dynamicWhere"/>
+	</select>
+	
+		
+	<insert id="insertSelective" parameterType="com.zsc.csg.core.orm.sys.domain.SysUsr" >
+    insert into T_CSG_SYS_USER
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+		    	<if test="@Ognl@isNotEmpty(uuid)">
+		    	UUID,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(name)">
+		    	NAME,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(loginName)">
+		    	LOGIN_NAME,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(loginPwd)">
+		    	LOGIN_PWD,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(createtime)">
+		    	CREATETIME,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(state)">
+		    	STATE,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(createUser)">
+		    	CREATE_USER,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(updateUser)">
+		    	UPDATE_USER,
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(updatetime)">
+		    	UPDATETIME,
+		    	</if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+		    	<if test="@Ognl@isNotEmpty(uuid)">
+		    	#{uuid},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(name)">
+		    	#{name},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(loginName)">
+		    	#{loginName},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(loginPwd)">
+		    	#{loginPwd},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(createtime)">
+		    	#{createtime},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(state)">
+		    	#{state},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(createUser)">
+		    	#{createUser},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(updateUser)">
+		    	#{updateUser},
+		    	</if>
+		    	<if test="@Ognl@isNotEmpty(updatetime)">
+		    	#{updatetime},
+		    	</if>
+    	</trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.zsc.csg.core.orm.sys.domain.SysUsr" >
+    update T_CSG_SYS_USER
+    <set >
+    		<if test="@Ognl@isNotEmpty(name)">
+			NAME=#{name},
+			</if>
+    		<if test="@Ognl@isNotEmpty(loginName)">
+			LOGIN_NAME=#{loginName},
+			</if>
+    		<if test="@Ognl@isNotEmpty(loginPwd)">
+			LOGIN_PWD=#{loginPwd},
+			</if>
+    		<if test="@Ognl@isNotEmpty(createtime)">
+			CREATETIME=#{createtime},
+			</if>
+    		<if test="@Ognl@isNotEmpty(state)">
+			STATE=#{state},
+			</if>
+    		<if test="@Ognl@isNotEmpty(createUser)">
+			CREATE_USER=#{createUser},
+			</if>
+    		<if test="@Ognl@isNotEmpty(updateUser)">
+			UPDATE_USER=#{updateUser},
+			</if>
+    		<if test="@Ognl@isNotEmpty(updatetime)">
+			UPDATETIME=#{updatetime},
+			</if>
+    </set>
+		 WHERE 			UUID
+		=#{uuid}
+  </update>
+</mapper>

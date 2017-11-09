@@ -1,0 +1,50 @@
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'spring-boot'
+apply plugin: 'maven'
+
+buildscript {
+	repositories {
+	  maven { url "http://172.16.60.188:8081/nexus/content/groups/public" }
+	   
+	  mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.2.RELEASE")
+	}
+}
+ext {
+  springBootVersion = "1.2.2.RELEASE"
+   
+}
+dependencies {
+	compile project(":csg-core")
+	compile('com.suixingpay.common:common-systemLog:1.1-SNAPSHOT')
+	
+	
+	//spring boot
+	compile("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+	compile("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}")
+	compile("org.apache.tomcat.embed:tomcat-embed-jasper:8.0.20")
+	//codegen
+	compile('com.suixingpay:codegen:1.0-SNAPSHOT'){transitive = false}
+	compile ('org.freemarker:freemarker:2.3.20')
+	compile 'dom4j:dom4j:1.6.1'
+	//jstl
+	compile("javax.servlet:jstl:1.2"){transitive = false}
+	//
+	compile ("org.quartz-scheduler:quartz:2.2.1")
+	//http
+	compile("org.apache.httpcomponents:httpclient:4.5.2")
+	compile 'org.apache.httpcomponents:httpcore:4.4.4'
+	//
+	compile("com.suixingpay.common:common-web:2.0-SNAPSHOT"){
+        transitive = false	
+    }
+    //poi
+    compile 'org.apache.poi:poi:3.14'
+	compile 'org.apache.poi:poi-ooxml:3.14'
+}
+description = 'csg-web'
+version =  '1.0'

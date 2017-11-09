@@ -1,0 +1,5 @@
+
+include 'csg-core','csg-web','csg-test'
+
+
+rootProject.name = 'csg'

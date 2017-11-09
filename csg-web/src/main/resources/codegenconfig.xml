@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="gbk" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="codegen.xsd">
+
+	<properties>
+		<property name="company" value="zsc"></property>
+		<property name="project" value="sys"></property>
+		<property name="developer" value="zhao_sc@suixingpay.com"></property>
+	</properties>
+
+	
+	<database>
+		<dbHelperClass>com.suixingpay.cgm.db.impl.OracleHelper</dbHelperClass>
+		<url>jdbc:oracle:thin:@127.0.0.1:1521/orcl</url>
+		<username>zsc</username>
+		<password>123456</password>
+		
+	</database>
+	
+	<table tableName="T_CSG_SYS_USER">
+		<variable name="class" value="SysUsr"/>
+		<variable name="uncapClass" value="sysUsr"/>
+	</table>
+	
+	<templates basepath="./src/main/resources">
+		<!-- <template id="po" path="po.ftl" />
+		<template id="domain" path="domain.ftl" />
+		<template id="mapper" path="mapper.ftl" />
+		<template id="mapper-xml" path="mapper-xml.ftl" />
+		<template id="service" path="service.ftl" /> -->
+		<!-- <template id="serviceimpl" path="serviceimpl.ftl" />-->
+		<template id="controller" path="controller.ftl" />
+		<!-- <template id="add" path="add.ftl" />
+		<template id="detail" path="detail.ftl" />
+		<template id="edit" path="edit.ftl" />
+		<template id="list" path="list.ftl" /> -->
+	</templates>
+	
+	<files baseDir="." >
+	   <!--  <file refTemplate="po" filename="{class}Po.java" dir="src\main\java\com\{company}\csg\core\orm\{project}\po" />
+		<file refTemplate="domain" filename="{class}.java" dir="src\main\java\com\{company}\csg\core\orm\{project}\domain" />
+		<file refTemplate="mapper" filename="{class}Mapper.java" dir="src\main\java\com\{company}\csg\core\orm\{project}\mapper" />
+		<file refTemplate="mapper-xml" filename="{class}Mapper.xml" dir="src\main\resources\com\{company}\csg\core\orm\{project}\mapper" />
+		<file refTemplate="service" filename="{class}Service.java" dir="src\main\java\com\{company}\csg\admin\{project}\service" /> -->
+		<!-- <file refTemplate="serviceimpl" filename="{class}ServiceImpl.java" dir="src\main\java\com\{company}\csg\admin\{project}\service\impl" />-->
+		<file refTemplate="controller" filename="{class}Controller.java" dir="src/main/java/com/{company}\csg\admin/{project}/controller" />
+		<!-- <file refTemplate="add" filename="{uncapClass}Add.jsp" dir="src/main/webapp/WEB-INF/jsp/{project}/{uncapClass}" />
+		<file refTemplate="detail" filename="{uncapClass}Detail.jsp" dir="src/main/webapp/WEB-INF/jsp/{project}/{uncapClass}" />
+		<file refTemplate="edit" filename="{uncapClass}Edit.jsp" dir="src/main/webapp/WEB-INF/jsp/{project}/{uncapClass}" />
+		<file refTemplate="list" filename="{uncapClass}List.jsp" dir="src/main/webapp/WEB-INF/jsp/{project}/{uncapClass}" /> -->
+	</files>
+	
+</config>

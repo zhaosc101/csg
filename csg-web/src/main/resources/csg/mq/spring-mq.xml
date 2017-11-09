@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"  
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+           http://www.springframework.org/schema/rabbit   
+   		   http://www.springframework.org/schema/rabbit/spring-rabbit-1.3.xsd  
+           ">
+    <rabbit:connection-factory id="connectionFactory" 
+    		host="#{propertiesReader['amqp.rabbitmq.host']}" 
+    		port="#{propertiesReader['amqp.rabbitmq.post']}" username="#{propertiesReader['amqp.rabbitmq.username']}" password="#{propertiesReader['amqp.rabbitmq.password']}"/>
+    <rabbit:admin id="rabbitAdmin" connection-factory="connectionFactory" />
+    
+	<import resource="classpath:csg/mq/rabbitmq-producer.xml" />
+	<import resource="classpath:csg/mq/rabbitmq-consumer.xml" />
+	<!-- spring template声明-->
+    <rabbit:template exchange="amqpExchange" id="amqpTemplate"  connection-factory="connectionFactory"  message-converter="jsonMessageConverter" />
+    
+    <!-- 消息对象json转换类 -->
+    <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" />
+</beans>

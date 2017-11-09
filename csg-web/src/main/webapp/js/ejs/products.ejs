@@ -1,0 +1,59 @@
+<!--所有满足条件的商品信息-->
+<div>
+    <div id="cfs_container" class="tab-content">
+        <!--遍历商品-->
+        <ul id="cfsTabs" class="nav nav-tabs">
+            [% for(var i = 0;i < goodsList.length;i++){
+            var goods = goodsList[i];
+            var goodsId = goods.goodsId;
+            var name = goods.goodsName;
+            var desc = goods.goodsDesc;
+            var active = (goodsId==currentGoodsId) ? 'in active' : '';
+            var rate = goods['rate'];
+            %]
+            <!--商品的标签页页签-->
+            <li class="[%= active %]" tabId="tab_[%= goodsId %]">
+                <a href="#tab_[%= goodsId %]" data-toggle="tab">
+                    [%= name %]
+                </a>
+            </li>
+            [% } %]
+        </ul>
+        <div id="myTabContent" class="tab-content">
+            [% for(var i = 0;i < goodsList.length;i++){
+            var goods = goodsList[i];
+            var goodsId = goods.goodsId;
+            var name = goods.goodsName;
+            var desc = goods.goodsDesc;
+            var active = i == 0 ? 'in active' : '';
+            var rate = goods['rate'];
+            %]
+            <!--商品具体信息-->
+            <div class="tab-pane fade cfs_goods [%= active %]" id="tab_[%= goodsId %]">
+                <div id="cfs_goodsList_uuid001" _uuid=" uuid001=" _name="goodsListId" class="cfs_req">
+                    <fileset>
+                        <legend>计费类型</legend>
+                        <div id="cfs_rate_">
+                            内容[%= name %]
+                        </div>
+                </div>
+                </fileset>
+            </div>
+            [% } %]
+        </div>
+    </div>
+    <input type="button" value="确定选择" onclick="valid()">
+</div>
+<script>
+    var currentGoodsId = '[%=currentGoodsId%]';
+    $('#cfs_container #cfsTabs li').click(function (e) {
+        e.preventDefault();//阻止a链接的跳转行为
+        currentGoodsId = $(this).attr('tabId');
+        alert('选中商品:' + currentGoodsId);
+    })
+    function valid() {
+        var $activeTab = $('#'+currentGoodsId);
+        var $inputs = $activeTab.find('input');
+        alert($activeTab.html());
+    }
+</script>

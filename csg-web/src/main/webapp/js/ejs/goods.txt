@@ -1,0 +1,274 @@
+<%
+var DISABLED = justView ? 'disabled' : '';
+var PRESET = preset ? '1' : '2';
+var PRESET_PREFIX = preset ? '预设' : '';
+var NOT_EMPTY = "<font color='red'>*</font>";
+//startDate=1472140800000;
+%>
+<div id="cfs_container<%= PRESET %>" class="tab-content">
+    <div>
+        <div class="form-group form-group-sm width-300px">
+            <label class="col-sm-4 control-label widget-color-normal5 width-100px no-padding-left">
+                <%= PRESET_PREFIX + '计费方式:' + NOT_EMPTY %>
+            </label>
+            <div class="col-sm-8  no-padding">
+                <div class="width-48 inline has-feedback">
+                    <select id="selectedGoods<%= PRESET %>" <%= DISABLED %> class="chosen-select form-control">
+                        <option value="">--请选择--</option>
+                        <% for(var i = 0;i < goodsList.length;i++){
+                            var goods = goodsList[i];
+                            var goodsId = goods.goodsId;
+                            var name = goods.goodsName;
+                        %>
+                        <option value="<%= goodsId %>" <%= ((goodsId == currentGoodsId) ? 'selected' : '') %>><%= name %> </option>
+                        <% } %>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <% if(preset){ %>
+        <div class="form-group form-group-sm width-300px">
+            <form id='effDtFrom<%= PRESET %>' class="cfsForm<%= PRESET %>">
+                <label class="col-sm-4 control-label widget-color-normal5 width-80px no-padding-left">预设生效日期<%= NOT_EMPTY %>
+                    :</label>
+                <div class="input-daterange input-group width-200px"
+                     data-date-format="yyyy-mm-dd">
+                    <input type="text" id="effDt<%= PRESET %>" name="effDt" value="<%= effDt %>" placeholder="选择生效日期"
+                           onchange="validateEffDt($(this));"
+                            <%= DISABLED %> check-type='required date' required-message='生效日期必须填写!'
+                           class="form-control input-small width-48">
+                    <span id="dayCountTip<%= PRESET %>" style="border:none;font-size: 12px;color:green;"></span>
+                </div>
+            </form>
+        </div>
+        <% } %>
+    </div>
+    <div id="myTabContent" class="">
+        <!--遍历商品 显示商品具体信息-->
+        <%
+        for(var goodsIndex = 0;goodsIndex < goodsList.length;goodsIndex++){
+            var goods = goodsList[goodsIndex];
+            var goodsId = goods.goodsId;
+            var goodsName = goods.goodsName;
+            var active = goodsId == currentGoodsId ? 'display: block;' : 'display: none;';
+            var sections = goods.sections;
+        %>
+        <form id="cfsForm<%= PRESET + goodsId %>" class="cfsForm<%= PRESET %>">
+            <div class="cfs_goods" id="tab_<%= goodsId %>"
+                 goodsId="<%= goodsId %>" goodsName="<%= goodsName %>"
+                 style="<%= active %>">
+                <!--遍历商品段落-->
+                <%
+                for(var sectionIndex = 0;sectionIndex < sections.length;sectionIndex++){
+                    var section = sections[sectionIndex];
+                    var rateInfo = section.rateInfo;
+                %>
+                <div id="cfs_section" _uuid=" uuid001=" _name="goodsListId" class="section">
+                    <fileset>
+                        <h5 class="header smaller lighter blue" id="sectionName"
+                            value="<%= section.sectionName %>"><%= section.sectionName %>
+                        </h5>
+                        <div id="<%= section.pricSectionId %>" rateId="<%= rateInfo.rateId %>"
+                             sectionId="<%= section.pricSectionId %>">
+                            <input type="hidden" id="pricSectionId" name="pricSectionId"
+                                   value="<%= section.pricSectionId %>">
+                            <input type="hidden" id="rateId" name="rateId" value="<%= section.rateId %>">
+                            <% for (var name in rateInfo){
+                                var e = rateInfo[name];
+                                if (e.length < 9 || '1' != e[6]) {
+                                    continue;
+                                }
+                                var readonly = '1' == e[2] ? '' : 'readonly';
+                                var info = e.join('？');
+                                var required = '1' == e[7];
+                                var requiredInfo = required ? 'check-type=\'required number\' required-message=\'' + e[1] + '不能为空！\'' : 'check-type=\'number\'';
+                                var range = "range='" + e[4] + '~' + e[3] + "'";
+                            %>
+                        </div>
+                        <div class="form-group form-group-sm  width-300px">
+                            <label class="col-sm-4 control-label widget-color-normal5 width-100px no-padding-left">
+                                <%= PRESET_PREFIX + e[1] + (required ? NOT_EMPTY : '') + ':' %>
+                            </label>
+                            <div class="col-sm-8  no-padding has-feedback">
+                                <input id="<%= e[8] + PRESET %>" name="<%= name %>" type="text" value="<%= e[0] %>"
+                                       regexp='^\d{1,}(\.\d{1,2})?$'
+                                       regexpTip="请输入最多两位小数的数字"
+                                       info="<%= info %>" <%= readonly %> <%= DISABLED %>
+                                        <%= requiredInfo %> <%= range %>
+                                />
+                            </div>
+                            <% } %>
+                        </div>
+                    </fileset>
+                </div>
+                <%
+                } %>
+            </div>
+        </form>
+        <% } %>
+    </div>
+</div>
+<div id="sectionTipDiv"
+     style="position:absolute;display:none;border:1px solid silver;background:#fef7ec;min-height: 100px;min-width: 160px;"></div>
+<script>
+    var A_DAY = 1 * 24 * 60 * 60 * 1000;
+    $(".cfsForm<%= PRESET %>").validation();
+    var selectedTab;
+    if(<%=preset%>){
+        $('.input-daterange').datepicker({
+            startDate: new Date(<%= startDate %>),
+            autoclose: true
+        });
+    }
+    var $sectionTipDiv = $("#sectionTipDiv");
+    var goodsList = JSON.parse('<%= JSON.stringify(goodsList) %>') || ( ( eval('(' + $('#goodsData').val() + ')') || {}).data || {}).goodsList || {};
+    var currentGoodsId = '<%= currentGoodsId %>' || '';
+    var capped = false;
+    var cappedValue;
+    var changeInfoKeys = ['selectedGoods<%= PRESET %>', 'effDt<%= PRESET %>'];
+    var changeInfo = {
+        'selectedGoods<%= PRESET %>': '计费方式', 'effDt<%= PRESET %>': '生效日期'
+    };
+    var count = 1;
+    var hasIdText = typeof idText != 'undefined';
+    if (hasIdText) {
+        idText['selectedGoods<%= PRESET %>'] = changeInfo['selectedGoods<%= PRESET %>'];
+        icsMessage['selectedGoods<%= PRESET %>'] = $('#selectedGoods<%= PRESET %>').find("option:selected").text();
+        idText['effDt<%= PRESET %>'] = changeInfo['effDt<%= PRESET %>'];
+        icsMessage['effDt<%= PRESET %>'] = $('#effDt<%= PRESET %>').val();
+    }
+    $('#selectedGoods<%= PRESET %>, #effDt<%= PRESET %>').on('change', function () {
+        count = parseInt($("#operateNum").val()) + 1;
+        var type = $(this).attr('id') == 'selectedGoods<%= PRESET %>' ? "2" : "1";
+        if ($(this).attr('id') == 'selectedGoods<%= PRESET %>') {
+            destroyTips();
+        }
+        getShowMessage(this, type, "red", count, "Alt");
+        getTipsMessage("red", count, '商户变更');
+    });
+    for (var i = 0; i < goodsList.length; i++) {
+        var goodsName = goodsList[i].goodsName;
+        var sections = goodsList[i].sections;
+        for (var j = 0; j < sections.length; j++) {
+            var rateInfo = sections[j].rateInfo;
+            for (var key in rateInfo) {
+                var elementId = rateInfo[key][8] + '<%= PRESET %>';
+                if (!elementId) {
+                    continue;
+                }
+                changeInfoKeys.push(elementId);
+                changeInfo[elementId] = goodsName + '-' + rateInfo[key][1];
+                if (hasIdText) {
+                    idText[elementId] = goodsName + '-' + rateInfo[key][1];
+                    icsMessage[elementId] = $('#' + elementId).val();
+                    $('#' + elementId).on('change', function () {
+                        getShowMessage(this, "1", "red", parseInt($("#operateNum").val()) + 1, "Alt");
+                        getTipsMessage("red", parseInt($("#operateNum").val()) + 1, '商户变更');
+                        //getShowMessage(this,"1",cssColor,count,flag);
+                        //getTipsMessage(cssColor,count,taskName);
+                    });
+                }
+            }
+        }
+    }
+    function queryChangeInfo() {
+        return changeInfo;
+    }
+    console.info(changeInfo);
+    $("#cfs_container<%= PRESET %> #selectedGoods<%= PRESET %>").change(function () {
+        capped = false;
+        cappedValue = null;
+        currentGoodsId = $(this).val();
+        $('#cfs_container<%= PRESET %> .cfs_goods').hide();
+        selectedTab = $('#cfs_container<%= PRESET %> #tab_' + currentGoodsId).show();
+    });
+    /**
+     * 数据校验并生成需要保存的信息
+     * @returns {{current: {currentGoodsId: (string|string), goodsList: *[]}}}
+     */
+    function checkAndMake() {
+        if (!currentGoodsId) {
+            return null;
+        }
+        var effDtform = $('#effDtFrom<%= PRESET %>');
+        if (effDtform.length > 0 && !effDtform.valid()) {
+            return false;
+        }
+        var $activeForm = $('#cfsForm<%= PRESET %>' + currentGoodsId);
+        var formValid = $activeForm.valid();
+        if (!formValid) {
+            console.info('校验选中的产品数据,结果:' + formValid)
+            return false;
+        }
+        var $activeTab = $('#cfs_container<%= PRESET %> #tab_' + currentGoodsId);
+        var selectedInfo = {
+            current: {
+                startDate: '<%= startDate %>',
+                currentGoodsId: currentGoodsId,
+                goodsList: [{goodsId: currentGoodsId, goodsName: $activeTab.attr('goodsName'), sections: []}]
+            }
+        };
+        var $effDt = $('#effDt<%= PRESET %>');
+        if ($effDt.length >= 1) {
+            selectedInfo.current.effDt = $effDt.val();
+        }
+        var $sections = $activeTab.find('.section');
+        $sections.each(function (k, v) {
+            var $section = $(v);
+            var $inputs = $section.find('input');
+            var section = {
+                pricSectionId: $section.find('#pricSectionId').val(),
+                rateId: $section.find('#rateId').val(),
+                sectionName: $section.find('#sectionName').attr('value'),
+                sectionDesc: $section.find('#sectionTip').attr('text'),
+                rateInfo: {}
+            };
+            $inputs.each(function (k, v) {
+                var $v = $(v);
+                var name = $(v).attr('name');
+                if (!$v.is(":hidden") && name) {
+                    $v.trigger('blur');
+                    var info = $(v).attr('info').split('？');
+                    info[0] = $v.val();
+                    section.rateInfo[name] = info;
+                    if (!capped && info[0] > 0) {
+                        var inputId = $v.attr('name');
+                        if ('maxFee' == inputId) {
+                            capped = true;
+                            cappedValue = info[0];
+                        }
+                    }
+                }
+            });
+            selectedInfo.current.goodsList[0].sections.push(section);
+        });
+        console.info(selectedInfo);
+        $('#template').val(JSON.stringify(selectedInfo))
+        return selectedInfo;
+    }
+    function validateEffDt(elem) {
+        var $dayCountTip = $('#dayCountTip<%= PRESET %>');
+        $dayCountTip.html('');
+        var effDtform = $('#effDtFrom<%= PRESET %>');
+        var dateValid = effDtform.valid();
+        if (dateValid) {
+            var days =Math.ceil( parseFloat((new Date(elem.val()).getTime() - <%= startDate %>) / A_DAY) );
+            if (days) {
+                $dayCountTip.html(days + '日后生效');
+            }
+        }
+    }
+    function isCapped() {
+        return capped;
+    }
+    function getCappedValue() {
+        return cappedValue;
+    }
+    function destroyTips() {
+        var prefix = '#liAlt' + count;
+        $(prefix + changeInfoKeys.join(',' + prefix)).remove();
+        if ($("#newShowChangeMessage").has("li").length == 0) {
+            $("#showChangeMessage").html($("#tipsInfo").val());
+        }
+    }
+</script>
