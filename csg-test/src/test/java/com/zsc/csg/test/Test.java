@@ -25,5 +25,6 @@ public class Test {
 		Set<String> s1 = new HashSet<String>();
 		Collections.addAll(s1, "A B C D".split(" "));
 		System.out.println(s1);
+		System.out.println(s1);
 	}
 }
