@@ -18,12 +18,14 @@ public class Test {
 		UsrInfo u1 = new UsrInfo();
 		BeanCopyUtil.copy(u, u1);
 		System.out.println(u1.toString());
+		///sssss
 		////dadsa
 		tes();
 	}
 	public static void tes() {
 		Set<String> s1 = new HashSet<String>();
 		Collections.addAll(s1, "A B C D".split(" "));
+		System.out.println(s1);///ssssss
 		
 		System.out.println(s1);
 		System.out.println(s1);
